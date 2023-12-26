@@ -1,0 +1,192 @@
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/raleway-v12-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Raleway'), local('Raleway-Regular'),
+        url('/fonts/raleway-v12-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+        url('/fonts/raleway-v12-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('/fonts/raleway-v12-latin-regular.woff') format('woff'), /* Modern Browsers */
+        url('/fonts/raleway-v12-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('/fonts/raleway-v12-latin-regular.svg#Raleway') format('svg'); /* Legacy iOS */
+}
+
+.ui-helper-margin-top {
+    margin-top: 10px;
+}
+
+.ui-helper-margin-bottom {
+    margin-bottom: 10px;
+}
+
+.ui-helper-margin-top-decrease {
+    margin-top: -10px;
+}
+
+.ui-helper-margin-bottom-decrease {
+    margin-bottom: -10px;
+}
+
+body {
+    font-family: 'Raleway', Verdana;
+    font-size: 14px;
+    padding-top: 90px;
+    padding-bottom: 75px;
+}
+
+.navbar-brand {
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .truncate {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    label {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 1200px) {
+    .desktop-only {
+        display: none;
+    }
+}
+
+@media (max-width: 992px) {
+}
+
+body .navbar {
+    font-size: 16px;
+}
+
+.nav-item .text-muted {
+    display: inline-block;
+    padding-top: 24px;
+    margin-right: 25px;
+    line-height: inherit;
+    white-space: nowrap;
+}
+
+.nav-item .text-muted img {
+    margin-top: -7px;
+}
+
+.nav-item .text-muted svg {
+    margin-top: -7px;
+}
+
+::-webkit-input-placeholder { 
+    font-family: 'Raleway', Verdana;
+    font-size: 14px;
+}
+
+::-moz-placeholder { 
+    font-family: 'Raleway', Verdana;
+    font-size: 14px;
+} /* firefox 19+ */
+
+:-ms-input-placeholder { 
+    font-family: 'Raleway', Verdana;
+    font-size: 14px;
+} /* ie */
+
+
+input:-moz-placeholder { 
+    font-family: 'Raleway', Verdana;
+    font-size: 14px;
+}
+
+.navbar-collapse {
+    text-align: center;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    z-index: 500;
+}
+
+body > .container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+}
+
+.col-padding {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.home .card {
+    margin: 0 auto;
+    float: none;
+    margin-bottom: 10px;
+    min-height: calc(50vh - 120px);
+    max-height: calc(50vh - 120px);
+    overflow: hidden;
+}
+
+.vh-100 {
+    height: calc(100vh - 190px);
+}
+
+.home .card > a {
+    cursor: pointer;
+    padding-top: 10px;
+    text-decoration: none;
+}
+
+.home .card:hover {
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.2);
+}
+
+.form-group > label {
+    font-weight: bold;
+}
+
+.form-title {
+    margin-bottom: 10px;
+}
+
+.input-label-middle {
+    padding-top: 10px;
+}
+
+.input-label-middle-rating {
+    padding-top: 25px;
+}
+
+.star > svg {
+    cursor: pointer;
+}
+
+table.dataTable {
+    border-collapse: collapse !important;
+}
+
+.rating-stars, .star {
+    cursor: default !important;
+}
+.filter-label {
+    margin-top: 8px;
+}
+
+.form-check-label {
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.form-check-label input {
+    cursor: pointer;
+}
+

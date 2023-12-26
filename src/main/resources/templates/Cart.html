@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+      <div th:replace="layout/Modal :: #modal-fragment"></div>
+
+      <script th:inline="javascript">
+         /*<![CDATA[*/
+         $(document).ready(function () {
+            doCreateRatings(true, 'sd');
+            $('table').DataTable({
+                paging: false,
+                ordering: false,
+                info: false,
+                filter: false
+            });
+            $('.remove-product-button').click(function (e) {
+               e.preventDefault();
+               var $btn = $(this);
+               var message = /*[[#{confirm.remove.product.from.cart}]]*/ DEFAULT_CONFIRM_MESSAGE;
+               doConfirm(message, function () {
+                  $btn.closest('form').submit();
+               });
+            });
+         });
+         /*]]>*/
+      </script>
+
+      <div class="container cart">
+
+         <div class="row w-100 mx-auto">
+            <div class="col-12 form-title">
+               <h2 th:text="#{shopping.cart.title}" ></h2>
+            </div>
+         </div>
+
+         <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+         <div class="row w-100 mx-auto" th:if="${session['shoppingCart'].products.size() == 0}">
+            <div class="col">
+               <div class="alert alert-warning">
+                  <span th:text="#{shopping.cart.empty}"></span>
+               </div>               
+            </div>
+         </div>
+
+         <div class="row w-100 mx-auto" th:if="${session['shoppingCart'].products.size() >0}">
+            <div class="col">
+               <form th:action="@{/orders/complete}" method="GET">
+                  <button class="btn btn-sm btn-success" type="submit">
+                     <i class="fa fa-shopping-cart"></i>&nbsp;
+                     <span th:text="#{shopping.cart.buy}"></span>
+                  </button>
+               </form>
+            </div>
+         </div>
+         
+         <div class="row w-100 ui-helper-margin-top mx-auto" th:if="${session['shoppingCart'].products.size() >0}">
+            <div class="col">
+               <table class="table table-striped dt-responsive w-100" >
+                  <thead>
+                     <tr>
+                        <th data-priority="2" data-orderable="false" data-order="false"></th>
+                        <th data-priority="1" th:text="#{product.name}"></th>
+                        <th data-priority="5" th:text="#{product.description}"></th>
+                        <th data-priority="4" th:text="#{product.category}"></th>
+                        <th data-priority="3" th:text="#{product.rating}"></th>
+                        <th data-priority="2" th:text="#{product.price}"></th>
+                        <th data-priority="1" data-orderable="false"><i class="fas fa-search"></i></th>
+                        <th data-priority="1" data-orderable="false"><i class="fas fa-trash"></i></th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr th:each="product,status  : ${session['shoppingCart'].products}">
+                        <td class="align-middle"><i class="fas" th:classappend="${product.icon}"></i></td>
+                        <td class="align-middle">
+                           <span th:text="${product.name}" th:title="${product.description}"></span></td>
+                        <td th:text="${product.description}"></td>
+                        <td class="align-middle" th:text="${product.category.name}"></td>
+                        <td class="align-middle">
+                           <input type="text" class="rating-loading" th:value="${product.rating}"/>
+                        </td>
+                        <td class="align-middle"><span th:text="${product.price}"></span><span>&euro;</span></td>
+                        <td class="align-middle">
+                           <form method="GET" th:action="@{/products/{id}(id=${product.productId})}">
+                              <button class="btn btn-sm btn-success" type="submit">
+                                 <i class="fa fa-search"></i>
+                              </button>
+                           </form>
+                        </td>
+                        <td class="align-middle">
+                           <form method="POST" th:action="@{/products/{id}/removeFromCart(id=${product.productId})}">
+                              <button class="btn btn-sm btn-danger remove-product-button" type="button">
+                                 <i class="fa fa-trash"></i>&nbsp;
+                              </button>
+                           </form>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+
+      </div>
+
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+
+    <header th:replace="layout/Includes :: #include-fragment"></header>
+
+    <body>
+
+        <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+
+        <script>
+            $(document).ready(function () {
+                doCreateRatings(true, 'sd');
+            });
+        </script>
+
+        <div class="container product">
+
+            <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+            <div class="row w-100 mx-auto">
+                <div th:classappend="${product.comments.size() > 0 ? 'col-6' : 'col-12'}">
+                    <div class="card mx-auto bg-light center-block ui-helper-margin-top">
+                        <div class="card-body">
+                            <i class="fas fa-5x" th:classappend="${product.icon}"></i>
+                            <h5 class="card-title ui-helper-margin-top" th:text="${product.name}"></h5>
+                            <h6 class="card-subtitle mb-2 text-muted truncate" th:text="${product.description}"></h6>
+                            <div class="ui-helper-margin-top">
+                                <span class="font-weight-bold" th:text="#{product.price}"></span>
+                                <span th:text="${product.price}"></span>
+                                <span>&euro;</span>
+                            </div>
+                            <div class="ui-helper-margin-top">
+                                <span class="font-weight-bold" th:text="#{product.total.sales}"></span>
+                                <span th:text="${product.sales}"></span>
+                            </div>
+                            <div class="ui-helper-margin-top">
+                                <input type="text" class="rating-loading" th:value="${product.rating}"/>
+                            </div>
+                            <div class="ui-helper-margin-top" >
+                                <form method="POST" th:action="@{/products/{id}/addToCart(id=${product.productId})}"
+                                      th:if="${!session['shoppingCart'].contains(product.productId)}"
+                                      class="d-inline">
+                                    <button class="btn btn-sm btn-success" type="submit">
+                                        <i class="fa fa-shopping-cart"></i>&nbsp;
+                                        <span th:text="#{product.add.to.cart}"></span>
+                                    </button>
+                                </form>
+                                <form method="GET" th:action="@{/products/{id}/rate(id=${product.productId})}"
+                                      th:if="${buyByUser}"
+                                      class="d-inline">
+                                    <button class="btn btn-sm btn-success" type="submit">
+                                        <i class="fa fa-thumbs-up"></i>&nbsp;
+                                        <span th:text="#{add.or.edit.comment.button}"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6" th:if="${product.comments.size() > 0}">
+                    <div th:each="comment, status  : ${product.comments}" 
+                         class="card mx-auto bg-light center-block ui-helper-margin-top">
+                        <div class="ui-helper-margin-top">
+                            <span th:if="${#strings.isEmpty(comment.user.image)}" class="fas fa-user"></span>
+                            <img th:unless="${#strings.isEmpty(comment.user.image)}" 
+                                 th:src="@{/resources/{user}/{image}(user=${comment.user.userId},image=${comment.user.image})}" 
+                                 width="24" height="24"/> 
+                            <span class="font-weight-bold" th:text="${comment.user.name}"></span>
+                        </div>
+                        <div class="ui-helper-margin-top">
+                            <input type="text" class="rating-loading" th:value="${comment.rating}"/>
+                        </div>
+                        <div class="ui-helper-margin-top">
+                            <span class="font-weight-bold" th:text="#{comment.date}"></span>
+                            <span th:text="${#dates.format(comment.timestamp, 'yyyy-MM-dd hh:mm')}">
+                            </span>
+                        </div>
+                        <div class="ui-helper-margin-top ui-helper-margin-bottom">
+                            <span th:text="${comment.text}">
+                            </span>
+                        </div>
+                    </div>      
+                </div>
+            </div>
+        </div>
+        <div th:replace="layout/Footer :: #footer-fragment"></div>
+    </body>
+</html>

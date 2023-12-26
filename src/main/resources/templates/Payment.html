@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+
+      <script>
+         $(document).ready(function () {
+             doConfigureFormValidation();
+             doConfigureInputMasking();
+             $(':radio[name="defaultCreditCard"]').change(function () {
+                 $('.credit-card-input').prop('disabled', $(this).hasClass('radio-off'));
+             });
+             $('button[type="submit"]').click(function () {
+                 $('input[name="pay"]').val($(this).data('pay'));
+             });
+         });
+      </script>
+
+      <div class="container new-order">
+
+         <div class="row w-100">
+            <div class="col col-padding">
+               <div class="card mx-auto bg-light center-block ui-helper-margin-top">
+                  <div class="card-body">
+
+
+                     <div class="row">
+                        <div class="col-12 form-title">
+                           <h2 th:text="#{new.order.title}" ></h2>
+                        </div>
+                     </div>
+
+                     <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+                     <form th:object="${paymentForm}" class="form-horizontal" method="POST" 
+                           th:action="@{/orders/{id}/pay(id=${order.orderId})}">
+                        <div class="form-group row" th:if="${session['user'].card != null}">
+                           <div class="d-none d-sm-block col-sm-4"></div>
+                           <div class="input-group col-12 col-sm-8">
+                              <label class="form-check-label">
+                                 <input type="radio" name="defaultCreditCard" value="true" 
+                                        class="radio-off form-check-input" checked>
+                                 <span th:text="#{payment.default.card} + ' #' + 
+                                       ${#strings.substring(session['user'].card.card,12,16)}"></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="form-group row" th:if="${session['user'].card != null}">
+                           <div class="d-none d-sm-block col-sm-4"></div>
+                           <div class="input-group col-12 col-sm-8">
+                              <label class="form-check-label">
+                                 <input type="radio" name="defaultCreditCard" value="false" 
+                                        class="radio-on form-check-input">
+                                 <span th:text="#{payment.different.card}"></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="col-4 text-right input-label-middle">
+                              <i class="fab fa-cc-visa fa-lg"></i>
+                              <i class="fab fa-cc-mastercard fa-lg"></i>
+                              <i class="fab fa-cc-amex fa-lg"></i>
+                           </div>
+                           <div class="input-group col-8 col-sm-6">
+                              <input th:field="*{creditCard}" class="form-control credit-card-input" 
+                                     data-inputmask="'mask': '9999999999999999'"
+                                     th:errorclass="error"
+                                     data-validation-error-msg-container="#input-card-error"
+                                     data-validation="required creditcard"
+                                     th:attr="data-validation-error-msg=#{payment.input.card.validation}"
+                                     th:disabled="${session['user'].card != null}"></input>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-4"></div>
+                           <div class="col-8 col-sm-6 text-left" id="input-card-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="cvv" class="col-4 text-right input-label-middle" th:text="#{payment.cvv}">
+                           </label>
+                           <div class="input-group col-8 col-sm-6">
+                              <input th:field="*{cvv}" class="form-control credit-card-input" 
+                                     data-inputmask="'mask': '999'"
+                                     th:errorclass="error" maxlength="3"
+                                     data-validation-error-msg-container="#input-cvv-error"
+                                     data-validation="cvv"
+                                     th:attr="data-validation-error-msg=#{payment.input.cvv.validation}"
+                                     th:disabled="${session['user'].card != null}"></input>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-4"></div>
+                           <div class="col-8 col-sm-6 text-left" id="input-cvv-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="cvv" class="col-4 text-right input-label-middle" 
+                                  th:text="#{payment.expiration.month}"></label>
+                           <div class="input-group col-8 col-sm-6">
+                              <select th:field="*{expirationMonth}" class="form-control credit-card-input" 
+                                      th:errorclass="error" data-validation="required"
+                                      data-inputmask-clearincomplete="true"
+                                      data-validation-error-msg-container="#input-expiration-month-error"
+                                      th:attr="data-validation-error-msg=#{payment.input.expiration.month.validation}"
+                                      th:disabled="${session['user'].card != null}">
+                                 <option value=''  th:text="#{month.select}"></option>
+                                 <option value='1' th:text="#{month.1}">January</option>
+                                 <option value='2' th:text="#{month.2}">February</option>
+                                 <option value='3' th:text="#{month.3}">March</option>
+                                 <option value='4' th:text="#{month.4}">April</option>
+                                 <option value='5' th:text="#{month.5}">May</option>
+                                 <option value='6' th:text="#{month.6}">June</option>
+                                 <option value='7' th:text="#{month.7}">July</option>
+                                 <option value='8' th:text="#{month.8}">August</option>
+                                 <option value='9' th:text="#{month.9}">September</option>
+                                 <option value='10' th:text="#{month.10}">October</option>
+                                 <option value='11' th:text="#{month.11}">November</option>
+                                 <option value='12' th:text="#{month.12}">December</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-4"></div>
+                           <div class="col-8 col-sm-6 text-left" id="input-expiration-month-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="cvv" class="col-4 text-right input-label-middle" 
+                                  th:text="#{payment.expiration.year}"></label>
+                           <div class="input-group col-8 col-sm-6">
+                              <select th:field="*{expirationYear}" class="form-control credit-card-input" 
+                                      th:errorclass="error" data-validation="required"
+                                      data-validation-error-msg-container="#input-expiration-year-error"
+                                      th:attr="data-validation-error-msg=#{payment.input.expiration.year.validation}"
+                                      th:disabled="${session['user'].card != null}">
+                                 <option value='' th:text="#{year.select}"></option>
+                                 <option value='2019'>2019</option>
+                                 <option value='2020'>2020</option>
+                                 <option value='2020'>2021</option>
+                                 <option value='2020'>2022</option>
+                                 <option value='2020'>2023</option>
+                                 <option value='2020'>2024</option>
+                                 <option value='2020'>2025</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-4"></div>
+                           <div class="col-8 col-sm-6 text-left" id="input-expiration-year-error"></div>
+                        </div>
+                        <div class="form-group row ui-helper-margin-top-decrease">
+                           <div class="col-4"></div>
+                           <div class="input-group col-8">
+                              <label class="form-check-label input-label-middle">
+                                 <input type="checkbox" th:field='*{save}' 
+                                        class="credit-card-input form-check-input"
+                                        th:disabled="${session['user'].card != null}">
+                                 <span th:text="#{payment.set.as.default.card}"></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="row w-100">
+                           <div class="col">
+                              <button class="btn btn-sm btn-success" type="submit" >
+                                 <i class="fa fa-credit-card"></i>&nbsp;
+                                 <span th:text="#{payment.pay.button}"></span>
+                              </button>
+                           </div>
+                        </div>  
+                     </form>
+
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>

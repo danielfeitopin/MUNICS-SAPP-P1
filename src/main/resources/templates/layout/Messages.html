@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <div id='messages-fragment'>
+         
+         <div th:if="${errorMessage != null}"  class="row w-100 mx-auto">
+            <div class="col">
+               <div class="alert alert-danger">
+                  <span th:text="${errorMessage}"></span>
+               </div>               
+            </div>
+         </div>
+
+         <div th:if="${successMessage != null}"  class="row w-100 mx-auto">
+            <div class="col">
+               <div class="alert alert-success">
+                  <span th:text="${successMessage}"></span>
+               </div>               
+            </div>
+         </div>
+
+         <div th:if="${warningMessage != null}"  class="row w-100 mx-auto">
+            <div class="col">
+               <div class="alert alert-warning">
+                  <span th:text="${warningMessage}"></span>
+               </div>               
+            </div>
+         </div>
+         
+      </div>
+   </body>
+</html>
+

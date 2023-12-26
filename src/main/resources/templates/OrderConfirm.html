@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+
+      <script>
+         $(document).ready(function () {
+             doCreateRatings(true, 'sd');
+             doConfigureFormValidation();
+             $('table').DataTable({
+                 paging: false,
+                 ordering: false,
+                 info: false,
+                 filter: false
+             });
+             $(':radio[name="defaultAddress"]').change(function () {
+                 $('textarea').prop('disabled', $(this).hasClass('radio-off'));
+             });
+             $('button[type="submit"]').click(function () {
+                 $('input[name="payNow"]').val($(this).data('pay'));
+             });
+         });
+      </script>
+
+      <div class="container new-order">
+
+         <div class="row w-100 mx-auto">
+            <div class="col col-padding">
+               <div class="card mx-auto bg-light center-block ui-helper-margin-top">
+                  <div class="card-body">
+
+
+                     <div class="row">
+                        <div class="col-12 form-title">
+                           <h2 th:text="#{new.order.title}" ></h2>
+                        </div>
+                     </div>
+
+                     <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+                     <div class="row mx-auto w-100" th:if="${products.size() == 0}">
+                        <div class="col">
+                           <div class="alert alert-warning">
+                              <span th:text="#{shopping.cart.empty}"></span>
+                           </div>               
+                        </div>
+                     </div>
+
+                     <form th:object="${orderForm}" class="form-horizontal" method="POST" 
+                           th:if="${products.size() >0}"
+                           th:action="@{/orders}">
+                        <input type="hidden" th:field="*{payNow}"/>
+                        <input type="hidden" th:field="*{name}"/>
+                        <input type="hidden" th:field="*{price}"/>
+                        <input th:each="product : ${products}" type="hidden" 
+                               name="products[]" th:value="${product.productId}"/>
+                        <div class="form-group row">
+                           <label class="col-4 text-right" th:text="#{order.total.price}"></label>
+                           <div class="col-8 text-left">
+                              <span th:text="${orderForm.price}"></span>&euro;
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="d-none d-sm-block col-sm-4"></div>
+                           <div class="input-group col-12 col-sm-8">
+                              <label class="form-check-label">
+                                 <input type="radio" name="defaultAddress" value="true" 
+                                        class="radio-off form-check-input" checked>
+                                 <span th:text="#{order.default.address}"></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="d-none d-sm-block col-sm-4"></div>
+                           <div class="input-group col-12 col-sm-8 text-left">
+                              <label class="form-check-label">
+                                 <input type="radio" name="defaultAddress" value="false" 
+                                        class="radio-on form-check-input">
+                                 <span th:text="#{order.different.address}"></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="address" class="col-4 text-right" th:text="#{order.address}"></label>
+                           <div class="input-group col-8 col-sm-6">
+                              <textarea th:field="*{address}" class="form-control" id="address" name="address" rows="3"
+                                        th:errorclass="error"
+                                        data-validation-error-msg-container="#input-address-error"
+                                        data-validation="required"
+                                        th:attr="data-validation-error-msg=#{profile.input.address.validation}"
+                                        disabled="true"></textarea>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-4"></div>
+                           <div class="col-8 text-left" id="input-address-error"></div>
+                        </div>
+                        <div class="row w-100 mx-auto">
+                           <div class="col-12 text-center">
+                              <button class="btn btn-sm btn-success" type="submit"
+                                      data-pay="true">
+                                 <i class="fa fa-shopping-cart"></i>&nbsp;
+                                 <span th:text="#{order.buy.and.pay}"></span>
+                              </button>
+                              <button class="btn btn-sm btn-secondary d-none d-sm-inline" type="submit"
+                                      data-pay="false">
+                                 <i class="fa fa-shopping-cart"></i>&nbsp;
+                                 <span th:text="#{order.buy.and.pay.later}"></span>
+                              </button>
+                           </div>
+                        </div>  
+                     </form>
+
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div class="row w-100 mx-auto" th:if="${products.size() > 0}">
+            <div class="col ui-helper-margin-top">
+               <table class="table table-striped dt-responsive w-100" >
+                  <thead>
+                     <tr>
+                        <th data-priority="2" data-orderable="false" data-order="false"></th>
+                        <th data-priority="1" th:text="#{product.name}"></th>
+                        <th data-priority="5" th:text="#{product.description}"></th>
+                        <th data-priority="4" th:text="#{product.category}"></th>
+                        <th data-priority="3" th:text="#{product.rating}"></th>
+                        <th data-priority="2" th:text="#{product.price}"></th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr th:each="product,status  : ${products}">
+                        <td class="align-middle"><i class="fas" th:classappend="${product.icon}"></i></td>
+                        <td class="align-middle">
+                           <span th:text="${product.name}" th:title="${product.description}"></span></td>
+                        <td th:text="${product.description}"></td>
+                        <td class="align-middle" th:text="${product.category.name}"></td>
+                        <td class="align-middle">
+                           <input type="text" class="rating-loading" th:value="${product.rating}"/>
+                        </td>
+                        <td class="align-middle"><span th:text="${product.price}"></span><span>&euro;</span></td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>

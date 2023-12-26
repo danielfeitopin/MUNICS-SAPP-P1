@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+      <div class="container error">
+         <div class="row">
+            <div class="col-12">
+               <h2 th:text="#{error.title}"></h2>
+               <hr>
+            </div>
+         </div>
+         <p th:if="${url}">
+            <b th:text="#{error.page}"></b> <span th:text="${url}"></span>
+         </p>
+         <p th:if="${timestamp}" id='created'>
+            <b th:text="#{error.time}"></b> <span th:text="${timestamp}"></span>
+         </p>
+         <p th:if="${status}">
+            <b th:text="#{error.status}"></b> <span th:text="${status}"></span> <span
+                th:if="${error}" th:text="'('+${error}+')'"></span>
+         </p>
+         
+         <div th:if="${errorMessage} and ${errorMessage.length() != 0}">
+            <span th:if="${errorMessage} and ${errorMessage.length() != 0}" th:text="${errorMessage}"></span>
+         </div>
+         
+         <div th:if="${exception}">
+            <div th:if="${exception instanceof T(java.lang.Exception)}" class="text-left">              
+            </div>
+            <div th:if="${exception instanceof T(java.lang.String)}">
+               <b th:text="#{error.cause}"></b>
+               <span th:text="${exception}"></span>
+            </div>
+         </div>
+         
+         <p th:if="${trace}" class="text-left">
+            <br/>
+            <span th:text="${trace}"></span>
+         </p>
+         
+      </div>
+      
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+      
+   </body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+      <div th:replace="layout/Modal :: #modal-fragment"></div>
+
+      <script th:inline="javascript">
+         /*<![CDATA[*/
+         $(document).ready(function () {
+             doConfigureFormValidation();
+             $('#remove-image-link').click(function (e) {
+                 e.preventDefault();
+                 var message = /*[[#{confirm.remove.profile.image}]]*/ DEFAULT_CONFIRM_MESSAGE;
+                 doConfirm(message, function () {
+                     $('#remove-image-form').submit();
+                 });
+             });
+         });
+         /*]]>*/
+      </script>
+      <div class="container register">
+
+         <div class="row w-100 mx-auto">
+            <div class="col col-padding">
+               <div class="card mx-auto bg-light center-block ui-helper-margin-top">
+                  <div class="card-body">
+                     <div class="row">
+                        <div class="col-12 form-title">
+                           <h2 th:text="#{registration.title}" th:if="${session['user'] == null}"></h2>
+                           <h2 th:text="#{edit.profile.title}" th:unless="${session['user'] == null}"></h2>
+                        </div>
+                     </div>
+
+                     <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+                     <form th:object="${userProfileForm}" class="form-horizontal" method="POST" 
+                           enctype="multipart/form-data">
+                        <div class="form-group row">
+                           <label for="name" class="col-3 text-right input-label-middle"
+                                  th:text="#{profile.input.name}"></label>
+                           <div class="input-group col-9 col-sm-6">
+                              <div class="input-group-prepend">
+                                 <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
+                              </div>
+                              <input th:field="*{name}" type="text" class="form-control" id="name"
+                                     th:errorclass="error"
+                                     th:placeholder="#{profile.input.name.placeholder}"
+                                     data-validation="length alphanumeric"
+                                     data-validation-length="min4"
+                                     data-validation-error-msg-container="#input-name-error"
+                                     th:attr="data-validation-error-msg=#{profile.input.name.validation}">
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-name-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="email" class="col-3 text-right input-label-middle"
+                                  th:text="#{profile.input.email}"></label>
+                           <div class="input-group col-9 col-sm-6">
+                              <div class="input-group-prepend">
+                                 <span class="input-group-text"><i class="fas fa-at"></i></span>
+                              </div>
+                              <input th:field="*{email}" type="email" class="form-control" id="email" name="email"
+                                     aria-describedby="emailHelp"
+                                     th:placeholder="#{profile.input.email.placeholder}"
+                                     th:errorclass="error"
+                                     data-validation-error-msg-container="#input-email-error"
+                                     data-validation="email"
+                                     th:attr="data-validation-error-msg=#{profile.input.email.validation}">
+                           </div>
+                           <div class="d-none d-sm-block col-sm-3">
+                              <small id="emailHelp" class="form-text text-muted text-left"
+                                  th:text="#{profile.input.email.tip}"></small>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-email-error"></div>
+                        </div>
+                        <div class="form-group row" th:if="${session['user'] == null}">
+                           <label for="password_confirmation" class="col-3 text-right input-label-middle"
+                                  th:text="#{profile.input.password}"></label>
+                           <div class="input-group col-9 col-sm-6">
+                              <div class="input-group-prepend">
+                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                              </div>
+                              <input type="password" class="form-control"
+                                     id="password_confirmation" name="password_confirmation"
+                                     th:placeholder="#{profile.input.password.placeholder}"
+                                     data-validation-error-msg-container="#input-password-confirmation-error"
+                                     data-validation="length" data-validation-length="min4"
+                                     th:attr="data-validation-error-msg=#{profile.input.password.validation}">
+                           </div>
+                        </div>
+                        <div class="form-group row d-none" th:if="${session['user'] == null}">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-password-confirmation-error"></div>
+                        </div>
+                        <div class="form-group row" th:if="${session['user'] == null}">
+                           <label for="password" class="col-3 text-right input-label-middle"
+                                  th:text="#{profile.input.password.confirm}"></label>
+                           <div class="input-group col-9 col-sm-6">
+                              <div class="input-group-prepend">
+                                 <span class="input-group-text"><i class="fas fa-redo"></i></span>
+                              </div>
+                              <input type="password" class="form-control"
+                                     id="password" name="password"
+                                     th:placeholder="#{profile.input.password.confirm.placeholder}"
+                                     data-validation-error-msg-container="#input-password-error"
+                                     data-validation="confirmation"
+                                     th:attr="data-validation-error-msg=#{profile.input.password.confirm.validation}">
+                           </div>
+                        </div>
+                        <div class="form-group row d-none" th:if="${session['user'] == null}">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-password-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="address" class="col-3 text-right" th:text="#{profile.input.address}">
+                           </label>
+                           <div class="input-group col-9 col-sm-6">
+                              <textarea th:field="*{address}" class="form-control" id="address" name="address" rows="3"
+                                        th:errorclass="error"
+                                        data-validation-error-msg-container="#input-address-error"
+                                        data-validation="required"
+                                 th:attr="data-validation-error-msg=#{profile.input.address.validation}">
+                              </textarea>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-address-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="image" class="col-3 text-right" th:text="#{profile.input.image}"></label>
+                           <div class="input-group col-9 col-sm-6">
+                              <input type="file" class="form-control-file" id="image" name="image"
+                                     th:field="*{image}"
+                                     th:errorclass="error"
+                                     data-validation-error-msg-container="#input-image-error"
+                                     th:attr="data-validation-error-msg=#{profile.input.image.validation}"
+                                     aria-describedby="imageHelp">
+                           </div>
+                           <div class="d-none d-sm-block col-sm-3">
+                              <small id="imageHelp" class="form-text text-muted text-left"
+                                     th:text="#{profile.input.image.tip}"></small>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-image-error"></div>
+                        </div>
+                        <div class="form-group row" th:if="${session['user'] != null && !#strings.isEmpty(session['user'].image)}">
+                           <label for="image" class="col-3 text-right" 
+                                  th:text="#{profile.input.current.image}"></label>
+                           <div class="input-group col-6">
+                              <img th:src="@{/resources/{user}/{image}(user=${session['user'].userId},image=${session['user'].image})}" 
+                                   width="30" height="30"/>&nbsp;
+                              <a class="btn btn-outline-secondary btn-sm" href="/profile/image">
+                                 <i class="fas fa-download"></i>
+                              </a>&nbsp;
+                              <a class="btn btn-outline-secondary btn-sm" id="remove-image-link" href="#">
+                                 <i class="fas fa-trash-alt"></i>
+                              </a>
+                           </div>
+                           <div class="col-4">
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="col-4"></div>
+                           <div class="input-group col-8">
+                              <button th:if="${session['user'] == null}" type="submit" class="btn btn-primary"
+                                      th:text="#{registration.button}"></button>
+                              <button th:unless="${session['user'] == null}" type="submit" class="btn btn-primary"
+                                      th:text="#{edit.profile.button}"></button>
+                           </div>
+                        </div>
+                     </form>
+                     <form method="POST" action="/profile/image/remove" id="remove-image-form"></form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>

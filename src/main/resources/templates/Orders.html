@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+
+      <script>
+         $(document).ready(function () {
+             $('table').DataTable({
+                 paging: false,
+                 ordering: false,
+                 info: false,
+                 filter: false
+             });
+         });
+      </script>
+
+      <div class="container orders">
+
+         <div class="row mx-auto">
+            <div class="col-12 form-title">
+               <h2 th:text="#{orders.title}" ></h2>
+            </div>
+         </div>
+
+         <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+         <div class="row w-100 mx-auto" th:if="${orders.size() == 0}">
+            <div class="col">
+               <div class="alert alert-warning">
+                  <span th:text="#{orders.empty.table}"></span>
+               </div>               
+            </div>
+         </div>
+
+         <div class="row w-100 mx-auto" th:if="${orders.size() > 0}">
+            <div class="col ui-helper-margin-top">
+               <table class="table table-striped dt-responsive w-100" >
+                  <thead>
+                     <tr>
+                        <th data-priority="1" th:text="#{order.name}"></th>
+                        <th data-priority="3" th:text="#{order.date}"></th>
+                        <th data-priority="2" th:text="#{order.price}"></th>
+                        <th data-priority="4" th:text="#{order.state}"></th>
+                        <th data-priority="2"><i class="fas fa-search"></i></th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr th:each="order,status  : ${orders}">
+                        <td class="align-middle">
+                           <span th:text="${order.name}" ></span>
+                        </td>
+                        <td class="align-middle">
+                           <span th:text="${#dates.format(order.timestamp, 'yyyy-MM-dd hh:mm')}" ></span>
+                        </td>
+                        <td class="align-middle">
+                           <span th:text="${order.price}"></span><span>&euro;</span>
+                        </td>
+                        <td class="align-middle">
+                           <span th:if="${order.state.name() == 'CANCELLED'}" th:title="#{order.already.cancelled}" 
+                                 class="fa fa-times-circle fa-lg text-danger">
+                           </span>
+                           <span th:if="${order.state.name() == 'PENDING'}" th:title="#{order.pending}" 
+                                 class="fa fa-clock text-warning fa-lg"></span>
+                           <span th:if="${order.state.name() == 'COMPLETED'}" th:title="#{order.already.completed}" 
+                                 class="fa fa-certificate fa-lg text-success"></span>
+                        </td>
+                        <td class="align-middle">
+                           <form method="GET" th:action="@{/orders/{id}(id=${order.orderId})}">
+                              <button class="btn btn-sm btn-success" type="submit">
+                                 <i class="fa fa-search"></i>
+                              </button>
+                           </form>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>
+

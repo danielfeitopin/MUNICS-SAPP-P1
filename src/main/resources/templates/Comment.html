@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+
+      <script>
+         $(document).ready(function () {
+             doConfigureFormValidation();
+             doCreateRatings(false, 'sm');
+         });
+      </script>
+      <div class="container register">
+
+         <div class="row w-100">
+            <div class="col col-padding">
+               <div class="card mx-auto bg-light center-block ui-helper-margin-top">
+                  <div class="card-body">
+                     <div class="row">
+                        <div class="col-12 form-title">
+                           <h2 th:text="#{comment.title} + ': ' + ${product.name} + ' (' + ${product.category.name} + ')'"></h2>
+                        </div>
+                     </div>
+
+                     <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+                     <form th:object="${commentForm}" class="form-horizontal" method="POST">
+                        <input type="hidden" th:field="*{productId}"/>
+                        <div class="form-group row">
+                           <label for="name" class="col-3 text-right input-label-middle-rating" 
+                                  th:text="#{comment.rate}"/>
+                           <div class="input-group col-9 text-center">
+                              <input type="text" class="rating-loading" th:field="*{rating}"/>
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <label for="address" class="col-3 text-right" th:text="#{comment.text}"></label>
+                           <div class="input-group col-9 col-sm-7">
+                              <textarea th:field="*{text}" class="form-control" id="text" name="text" rows="3"
+                                        th:errorclass="error"
+                                        data-validation-error-msg-container="#input-text-error"
+                                        data-validation="required"
+                                 th:attr="data-validation-error-msg=#{comment.text.validation}">
+                              </textarea>
+                           </div>
+                        </div>
+                        <div class="form-group row d-none">
+                           <div class="col-3"></div>
+                           <div class="col-9 text-left" id="input-text-error"></div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="col-3"></div>
+                           <div class="input-group col-9">
+                              <button type="submit" class="btn btn-primary" th:text="#{comment.button}"></button>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>

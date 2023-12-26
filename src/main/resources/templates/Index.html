@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+
+      <div class="container home">
+
+         <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+         <div th:block>
+            <div th:fragment="card-fragment(category)" th:if="${category != null}">
+               <div class="card mx-auto text-center bg-light">
+                  <a th:href="@{/products(category=${category.name})}">
+                     <i class="fas fa-5x" th:classappend="${category.icon}"></i>
+                     <div class="card-body">
+                        <h5 class="card-title" th:text="${category.name}"></h5>
+                        <h6 class="card-subtitle mb-2 text-muted truncate" 
+                            th:text="${category.description}"></h6>
+                     </div>
+                  </a>
+               </div>
+            </div>
+         </div>         
+
+         <div class="align-middle vh-100">
+            <div class="row h-50 justify-content-end align-items-end">
+               <div class="col-6">
+                  <div th:replace="this :: card-fragment (category=${categories[0]})"></div>
+               </div>
+               <div class="col-6 align-bottom">
+                  <div th:replace="this :: card-fragment (category=${categories[1]})"></div>
+               </div>
+            </div>
+            <div class="row h-50">
+               <div class="col-6">
+                  <div th:replace="this :: card-fragment (category=${categories[2]})"></div>
+               </div>
+               <div class="col-6">
+                  <div th:replace="this :: card-fragment (category=${categories[3]})"></div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>

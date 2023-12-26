@@ -1,0 +1,6 @@
+*.log
+target/
+work/
+.idea/
+database/
+log/

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<assembly>
+    <id>src</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>.project</exclude>
+                <exclude>.classpath</exclude>
+                <exclude>.settings/**</exclude>
+                <exclude>derby.log</exclude>
+                <exclude>nbactions.xml</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>.git/**</exclude>
+                <exclude>.gitignore</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+
+   <header th:replace="layout/Includes :: #include-fragment"></header>
+
+   <body>
+
+      <div th:replace="layout/NavBar :: #navbar-fragment"></div>
+      <div th:replace="layout/Modal :: #modal-fragment"></div>
+
+      <script th:inline="javascript">
+         /*<![CDATA[*/
+         $(document).ready(function () {
+            doCreateRatings(true, 'sd');
+            doConfigureFormValidation();
+            $('table').DataTable({
+               paging: false,
+               ordering: false,
+               info: false,
+               filter: false
+            });
+            $(':radio[name="defaultAddress"]').change(function () {
+               $('textarea').prop('disabled', $(this).hasClass('radio-off'));
+            });
+            $('#cancel-order-button').click(function (e) {
+               e.preventDefault();
+               var message = /*[[#{confirm.cancel.order}]]*/ DEFAULT_CONFIRM_MESSAGE;
+               doConfirm(message, function () {
+                  $('#cancel-order-button').closest('form').submit();
+               });
+            });
+         });
+         /*]]>*/
+      </script>
+
+      <div class="container order">
+
+         <div class="row w-100 mx-auto">
+            <div class="col col-padding">
+               <div class="card mx-auto bg-light center-block ui-helper-margin-top">
+                  <div class="card-body">
+
+
+                     <div class="row">
+                        <div class="col-12 form-title">
+                           <h2 th:text="#{order.title} + ' ' + ${order.name}" ></h2>
+                        </div>
+                     </div>
+
+                     <div th:replace="layout/Messages :: #messages-fragment"></div>
+
+
+                     <div class="form-group row">
+                        <label class="col-6 text-right" th:text="#{order.total.price}"></label>
+                        <div class="col-6 text-left">
+                           <span th:text="${order.price}"></span>&euro;
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label class="col-6 text-right" th:text="#{order.date}"></label>
+                        <div class="col-6 text-left">
+                           <span th:text="${#dates.format(order.timestamp, 'yyyy-MM-dd hh:mm')}">
+                           </span>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="address" class="col-6 text-right" th:text="#{order.address}"></label>
+                        <div class="input-group col-6">
+                           <span th:text="${order.address}"></span>
+                        </div>
+                     </div>
+                     <div class="form-group row ui-helper-margin-bottom-decrease" 
+                          th:if="${order.state.name() != 'PENDING'}">
+                        <label class="col-6 text-right" th:text="#{order.state}"></label>
+                        <div class="col-6 text-left">
+                           <span th:if="${order.state.name() == 'CANCELLED'}" th:title="#{order.already.cancelled}" 
+                                 class="fa fa-times-circle fa-lg text-danger">
+                           </span>
+                           <span th:if="${order.state.name() == 'COMPLETED'}" th:title="#{order.already.completed}" 
+                                 class="fa fa-certificate text-success fa-lg"></span>
+                        </div>                     
+                     </div>
+                     <div class="row w-100 mx-auto" th:if="${order.state.name() == 'PENDING'}">
+                        <div class="col">
+                           <form method="GET" th:action="@{/orders/{id}/pay(id=${order.orderId})}" class="d-inline">
+                              <button class="btn btn-sm btn-success" type="submit">
+                                 <i class="fa fa-credit-card"></i>&nbsp;
+                                 <span th:text="#{order.pay.now}"></span>
+                              </button>
+                           </form>
+                           <form method="POST" th:action="@{/orders/{id}/cancel(id=${order.orderId})}"
+                                 class="d-inline">
+                              <button class="btn btn-sm btn-danger" type="button" id="cancel-order-button">
+                                 <i class="fa fa-times-circle"></i>&nbsp;
+                                 <span th:text="#{order.cancel}"></span>
+                              </button>                              
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div class="row w-100 mx-auto">
+            <div class="col ui-helper-margin-top">
+               <table class="table table-striped dt-responsive w-100" >
+                  <thead>
+                     <tr>
+                        <th data-priority="2" data-orderable="false" data-order="false"></th>
+                        <th data-priority="1" th:text="#{product.name}"></th>
+                        <th data-priority="5" th:text="#{product.description}"></th>
+                        <th data-priority="4" th:text="#{product.category}"></th>
+                        <th data-priority="3" th:text="#{product.rating}"></th>
+                        <th data-priority="2" th:text="#{product.price}"></th>
+                        <th data-priority="2"><i class="fas fa-search"></i></th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr th:each="orderLine,status  : ${order.orderLines}">
+                        <td class="align-middle"><i class="fas" th:classappend="${orderLine.product.icon}"></i></td>
+                        <td class="align-middle">
+                           <span th:text="${orderLine.product.name}" 
+                                 th:title="${orderLine.product.description}"></span>
+                        </td>
+                        <td th:text="${orderLine.product.description}"></td>
+                        <td class="align-middle" th:text="${orderLine.product.category.name}"></td>
+                        <td class="align-middle">
+                           <input type="text" class="rating-loading" th:value="${orderLine.product.rating}"/>
+                        </td>
+                        <td class="align-middle"><span th:text="${orderLine.price}"></span><span>&euro;</span></td>
+                        <td class="align-middle">
+                           <form method="GET" th:action="@{/products/{id}(id=${orderLine.product.productId})}">
+                              <button class="btn btn-sm btn-success" type="submit">
+                                 <i class="fa fa-search"></i>
+                              </button>
+                           </form>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      <div th:replace="layout/Footer :: #footer-fragment"></div>
+   </body>
+</html>
